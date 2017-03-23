@@ -13,7 +13,7 @@ ExecStart=/bin/sh -c '{{ uwsgi_django_home_dir }}/{{ uwsgi_django_project_name }
           --pidfile {{ uwsgi_django_home_dir }}/{{ uwsgi_django_project_name }}.%i.pid \
           --http-workers {{ uwsgi_django_num_workers }} \
           --pythonpath {{ uwsgi_django_home_dir }}/{{ uwsgi_django_project_name }}.%i \
-          {{ uwsgi_django_wsgiscript }}'
+          {{ uwsgi_django_wsgimodule }}'
 
 # PrivateTmp=true
 Environment=DEBUG={{ uwsgi_django_debug }}
