@@ -9,6 +9,7 @@ Group={{ uwsgi_django_project_name }}
 WorkingDirectory={{ uwsgi_django_home_dir }}
 ExecStart=/bin/sh -c '{{ uwsgi_django_home_dir }}/{{ uwsgi_django_project_name }}.%i/venv/bin/uwsgi \
           --http-socket unix://{{ uwsgi_django_home_dir }}/{{ uwsgi_django_project_name }}.%i/uwsgi.sock \
+          --chmod-socket 666 \
           --pidfile {{ uwsgi_django_home_dir }}/{{ uwsgi_django_project_name }}.%i.pid \
           --master \
           -p {{ uwsgi_django_num_workers }} \
