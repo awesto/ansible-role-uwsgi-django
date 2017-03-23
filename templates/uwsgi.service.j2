@@ -11,7 +11,7 @@ ExecStart=/bin/sh -c '{{ uwsgi_django_home_dir }}/{{ uwsgi_django_project_name }
           --http-socket unix://{{ uwsgi_django_home_dir }}/{{ uwsgi_django_project_name }}.%i/uwsgi.sock \
           --pidfile {{ uwsgi_django_home_dir }}/{{ uwsgi_django_project_name }}.%i.pid \
           --master \
-          --p {{ uwsgi_django_num_workers }} \
+          -p {{ uwsgi_django_num_workers }} \
           --pythonpath {{ uwsgi_django_home_dir }}/{{ uwsgi_django_project_name }}.%i \
           --module {{ uwsgi_django_wsgimodule }}'
 
