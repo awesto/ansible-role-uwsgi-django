@@ -1,0 +1,10 @@
+---
+uwsgi_django_home_dir: "/home/{{ uwsgi_django_project_name }}"
+uwsgi_django_venv_dir: "{{ uwsgi_django_home_dir }}/{{ uwsgi_django_project_name}}.{{ uwsgi_django_instance_tag }}/venv"
+uwsgi_django_project_dir: "{{ uwsgi_django_home_dir }}/{{ uwsgi_django_project_name }}.{{ uwsgi_django_instance_tag }}"
+uwsgi_django_wsgimodule: "{{ uwsgi_django_project_name }}.wsgi"
+uwsgi_django_debug: false
+uwsgi_django_media_root: "/var/srv/media/{{ uwsgi_django_project_name }}"
+uwsgi_django_extra_env: []
+uwsgi_django_num_workers: 1
+deploy_celery: false

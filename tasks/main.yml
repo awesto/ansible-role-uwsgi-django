@@ -1,0 +1,28 @@
+---
+- name: Required packages are installed
+  apt:
+    name: "{{ item }}"
+    state: latest
+  with_items:
+  - python-psycopg2
+  - node-less  # Required for in-request django-compressor compression.
+
+- name: Project user is present
+  user:
+    name: "{{ uwsgi_django_project_name }}"
+
+- name: Home directory is present
+  file:
+    name: "/home/{{ uwsgi_django_project_name }}"
+    state: directory
+    owner: "{{ uwsgi_django_project_name }}"
+    group: "{{ uwsgi_django_project_name }}"
+
+- name: uwsgi .service file is in place
+  template:
+    src: uwsgi.service.j2
+    dest: /etc/systemd/system/uwsgi.{{ uwsgi_django_project_name }}@.service
+  notify: Reload systemd units
+
+- include: celery.yml
+  when:  deploy_celery

@@ -1,0 +1,52 @@
+---
+- name: "Celery: make sure rabbitmq directory exists"
+  file:
+    path: /etc/rabbitmq
+    state: directory
+    mode: 0755
+
+- name: "Celery: Install rabbitmq-env.conf"
+  copy:
+    dest: /etc/rabbitmq/rabbitmq-env.conf
+    mode: 0644
+    content: NODENAME=rabbit@localhost
+  register: rabbitmq_env_conf
+
+- name: "Celery: Install RabbitMQ"
+  apt:
+    name: rabbitmq-server
+    state: installed
+
+- name: "Celery: Stop rabbitmq"
+  service:
+    name: rabbitmq-server
+    state: stopped
+  when: "{{ rabbitmq_env_conf['changed'] }}"
+
+- name: "Celery: Start rabbitmq"
+  service:
+    name: rabbitmq-server
+    state: started
+  when: "{{ rabbitmq_env_conf['changed'] }}"
+
+- name: "Celery: Install systemd unit file"
+  template:
+    src: celery.service.j2
+    dest: /etc/systemd/system/celery.{{ uwsgi_django_project_name }}@.service
+  notify: Reload systemd units
+
+- name: "Celery: Add RabbitMQ vhost"
+  rabbitmq_vhost:
+    name: "{{ uwsgi_django_project_name }}"
+    node: rabbit@localhost
+
+- name: "Celery: Add RabbitMQ user"
+  rabbitmq_user:
+    user: "{{ uwsgi_django_project_name }}"
+    password: "{{ uwsgi_django_project_name }}"
+    permissions:
+      - vhost: "{{ uwsgi_django_project_name }}"
+        configure_priv: ".*"
+        read_priv: ".*"
+        write_priv: ".*"
+    node: rabbit@localhost

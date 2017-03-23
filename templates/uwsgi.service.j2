@@ -1,0 +1,31 @@
+[Unit]
+Description=uwsgi daemon for {{ uwsgi_django_project_name }}.%I
+After=network.target
+
+[Service]
+PIDFile={{ uwsgi_django_home_dir }}/{{ uwsgi_django_project_name }}.%i.pid
+User={{ uwsgi_django_project_name }}
+Group={{ uwsgi_django_project_name }}
+WorkingDirectory={{ uwsgi_django_home_dir }}
+ExecStart=/bin/sh -c '{{ uwsgi_django_home_dir }}/{{ uwsgi_django_project_name }}.%i/venv/bin/python \
+          {{ uwsgi_django_home_dir }}/{{ uwsgi_django_project_name }}.%i/venv/bin/uwsgi \
+          --http-socket unix://{{ uwsgi_django_home_dir }}/{{ uwsgi_django_project_name }}.%i/uwsgi.sock \
+          --pidfile {{ uwsgi_django_home_dir }}/{{ uwsgi_django_project_name }}.%i.pid \
+          --http-workers {{ uwsgi_django_num_workers }} \
+          --pythonpath {{ uwsgi_django_home_dir }}/{{ uwsgi_django_project_name }}.%i \
+          {{ uwsgi_django_wsgiscript }}'
+
+# PrivateTmp=true
+Environment=DEBUG={{ uwsgi_django_debug }}
+Environment=ALLOWED_HOSTS={% for host in uwsgi_django_allowed_hosts %}{{ host }},{% endfor %}
+
+Environment=MEDIA_ROOT={{ uwsgi_django_media_root }}
+Environment=DATABASE_URL={{ uwsgi_django_database_url }}
+Environment=SECRET_KEY={{ uwsgi_django_secret_key }}
+
+{% for item in uwsgi_django_extra_env %}
+Environment={{ item.key }}={{ item.value }}
+{% endfor %}
+
+[Install]
+WantedBy=multi-user.target
