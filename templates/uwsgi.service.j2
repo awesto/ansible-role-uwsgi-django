@@ -26,7 +26,7 @@ Environment=DATABASE_URL={{ uwsgi_django_database_url }}
 Environment=SECRET_KEY={{ uwsgi_django_secret_key }}
 
 {% for item in uwsgi_django_extra_env %}
-{% if item != "" %}
+{% if item.value != "" %}
 Environment={{ item.key }}={{ item.value }}
 {% endif %}
 {% endfor %}
